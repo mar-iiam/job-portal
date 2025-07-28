@@ -2,9 +2,12 @@ package com.jobportal.job_portal.controller;
 
 import com.jobportal.job_portal.dto.RegisterRequest;
 import com.jobportal.job_portal.dto.RegisterResponse;
+import com.jobportal.job_portal.dto.LoginRequest;
+import com.jobportal.job_portal.dto.LoginResponse;
 import com.jobportal.job_portal.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,5 +20,10 @@ public class AuthController {
     @PostMapping("/register")
     public RegisterResponse register(@Valid @RequestBody RegisterRequest request) {
         return userService.register(request);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
+        return ResponseEntity.ok(userService.login(request));
     }
 }

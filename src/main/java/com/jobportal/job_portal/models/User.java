@@ -5,13 +5,18 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
-public class User {
+@Getter
+@Setter
+public class User implements UserDetails {
 
-    @Setter
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,32 +31,30 @@ public class User {
     @NotBlank
     private String password;
 
-    @Setter
-    @Getter
     private String role;
 
-    public @NotBlank String getUsername() {
-        return username;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
     }
 
-    public void setUsername(@NotBlank String username) {
-        this.username = username;
+    @Override
+    public boolean isAccountNonExpired() {
+        return UserDetails.super.isAccountNonExpired();
     }
 
-    public @Email @NotBlank String getEmail() {
-        return email;
+    @Override
+    public boolean isAccountNonLocked() {
+        return UserDetails.super.isAccountNonLocked();
     }
 
-    public void setEmail(@Email @NotBlank String email) {
-        this.email = email;
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return UserDetails.super.isCredentialsNonExpired();
     }
 
-    public @NotBlank String getPassword() {
-        return password;
+    @Override
+    public boolean isEnabled() {
+        return UserDetails.super.isEnabled();
     }
-
-    public void setPassword(@NotBlank String password) {
-        this.password = password;
-    }
-
 }
