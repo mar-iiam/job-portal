@@ -28,7 +28,8 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private JwtService jwtService;
-    @Lazy // ✅ Fixes circular dependency
+
+    @Lazy
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -71,7 +72,12 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         String token = jwtService.generateToken(user);
-        return new LoginResponse(token);
+        return new LoginResponse(
+                token,
+                user.getUsername(),
+                user.getEmail(),
+                user.getRole()
+        );
     }
 
     @Override
@@ -81,7 +87,7 @@ public class UserService implements UserDetailsService {
                         .builder()
                         .username(user.getUsername())
                         .password(user.getPassword())
-                        .roles(user.getRole().replace("ROLE_", "")) // Remove prefix for Spring format
+                        .roles(user.getRole().replace("ROLE_", ""))
                         .build())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
