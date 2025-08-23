@@ -20,4 +20,5 @@ public class JobResponse {
     private String companyName;
     private Date postedDate;
     private String postedBy;
+    private Double salary;
 }
