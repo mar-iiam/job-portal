@@ -5,7 +5,9 @@ import com.jobportal.job_portal.dto.LoginRequest;
 import com.jobportal.job_portal.dto.LoginResponse;
 import com.jobportal.job_portal.dto.RegisterRequest;
 import com.jobportal.job_portal.dto.RegisterResponse;
+import com.jobportal.job_portal.models.Profile;
 import com.jobportal.job_portal.models.User;
+import com.jobportal.job_portal.repository.ProfileRepository;
 import com.jobportal.job_portal.repository.UserRepository;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,8 @@ public class UserService implements UserDetailsService {
     @Lazy
     @Autowired
     private AuthenticationManager authenticationManager;
+    @Autowired
+    private ProfileRepository profileRepository;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -52,6 +56,14 @@ public class UserService implements UserDetailsService {
 
         User savedUser = userRepository.save(user);
 
+        // ✅ Create a blank profile for this new user
+        Profile profile = new Profile();
+        profile.setUser(savedUser);
+        profile.setBio("");       // default empty bio
+        profile.setSkills("");    // default empty skills
+        profile.setExperience(""); // default empty experience
+        profileRepository.save(profile);
+
         return new RegisterResponse(
                 savedUser.getId(),
                 savedUser.getUsername(),
@@ -59,6 +71,7 @@ public class UserService implements UserDetailsService {
                 savedUser.getRole()
         );
     }
+
 
     public LoginResponse login(LoginRequest request) {
         authenticationManager.authenticate(
